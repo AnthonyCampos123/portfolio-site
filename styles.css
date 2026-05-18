@@ -61,7 +61,7 @@ a {
 }
 
 .liquid-canvas,
-.state-canvas {
+.dijkstra-canvas {
   position: fixed;
   inset: 0;
   width: 100vw;
@@ -73,7 +73,7 @@ a {
   z-index: -2;
 }
 
-.state-canvas {
+.dijkstra-canvas {
   z-index: -1;
   opacity: 0.52;
   mix-blend-mode: multiply;
@@ -838,7 +838,7 @@ pre {
   }
 
   .liquid-canvas,
-  .state-canvas {
+  .dijkstra-canvas {
     display: none;
   }
 }

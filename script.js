@@ -1,7 +1,7 @@
 const canvas = document.querySelector("#liquidCanvas");
 const context = canvas.getContext("2d", { alpha: true });
-const stateCanvas = document.querySelector("#stateCanvas");
-const stateContext = stateCanvas.getContext("2d", { alpha: true });
+const dijkstraCanvas = document.querySelector("#dijkstraCanvas");
+const dijkstraContext = dijkstraCanvas.getContext("2d", { alpha: true });
 const progress = document.querySelector("#scrollProgress");
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const nav = document.querySelector(".site-nav");
@@ -28,20 +28,90 @@ let width = 0;
 let height = 0;
 let animationFrame = 0;
 
+const graphModel = {
+  source: 0,
+  nodes: [
+    { label: "S", x: 0.13, y: 0.28 },
+    { label: "A", x: 0.34, y: 0.16 },
+    { label: "B", x: 0.56, y: 0.28 },
+    { label: "C", x: 0.82, y: 0.18 },
+    { label: "D", x: 0.26, y: 0.66 },
+    { label: "E", x: 0.52, y: 0.76 },
+    { label: "F", x: 0.78, y: 0.62 }
+  ],
+  edges: [
+    [0, 1, 4],
+    [0, 4, 2],
+    [1, 2, 5],
+    [1, 4, 1],
+    [2, 3, 3],
+    [2, 5, 2],
+    [3, 6, 4],
+    [4, 2, 8],
+    [4, 5, 10],
+    [5, 6, 1],
+    [2, 6, 6]
+  ]
+};
+
+const dijkstraSteps = computeDijkstraSteps(graphModel);
+
+function computeDijkstraSteps(graph) {
+  const distances = Array(graph.nodes.length).fill(Infinity);
+  const previous = Array(graph.nodes.length).fill(null);
+  const settled = new Set();
+  const steps = [];
+
+  distances[graph.source] = 0;
+
+  while (settled.size < graph.nodes.length) {
+    let current = -1;
+    let best = Infinity;
+
+    distances.forEach((distance, index) => {
+      if (!settled.has(index) && distance < best) {
+        best = distance;
+        current = index;
+      }
+    });
+
+    if (current === -1) break;
+    settled.add(current);
+
+    graph.edges.forEach(([from, to, weight]) => {
+      if (from !== current || settled.has(to)) return;
+      const candidate = distances[current] + weight;
+      if (candidate < distances[to]) {
+        distances[to] = candidate;
+        previous[to] = current;
+      }
+    });
+
+    steps.push({
+      current,
+      distances: [...distances],
+      previous: [...previous],
+      settled: new Set(settled)
+    });
+  }
+
+  return steps;
+}
+
 function resizeCanvas() {
   const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
   width = window.innerWidth;
   height = window.innerHeight;
   canvas.width = Math.floor(width * pixelRatio);
   canvas.height = Math.floor(height * pixelRatio);
-  stateCanvas.width = Math.floor(width * pixelRatio);
-  stateCanvas.height = Math.floor(height * pixelRatio);
+  dijkstraCanvas.width = Math.floor(width * pixelRatio);
+  dijkstraCanvas.height = Math.floor(height * pixelRatio);
   canvas.style.width = `${width}px`;
   canvas.style.height = `${height}px`;
-  stateCanvas.style.width = `${width}px`;
-  stateCanvas.style.height = `${height}px`;
+  dijkstraCanvas.style.width = `${width}px`;
+  dijkstraCanvas.style.height = `${height}px`;
   context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-  stateContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+  dijkstraContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
   updateNavGlow();
 }
 
@@ -75,107 +145,99 @@ function drawLiquid(time) {
     context.fillRect(0, 0, width, height);
   });
 
-  drawStateMachine(time);
+  drawDijkstraSSSP(time);
 
   animationFrame = requestAnimationFrame(drawLiquid);
 }
 
-function drawStateMachine(time) {
-  const scale = Math.min(width / 1280, height / 760);
-  const nodeWidth = Math.max(86, 128 * scale);
-  const nodeHeight = Math.max(34, 46 * scale);
-  const states = [
-    { label: "INIT", x: 0.16, y: 0.24 },
-    { label: "AUTH", x: 0.46, y: 0.17 },
-    { label: "VERIFY", x: 0.78, y: 0.3 },
-    { label: "BUILD", x: 0.26, y: 0.66 },
-    { label: "SHIP", x: 0.62, y: 0.72 }
-  ];
-  const transitions = [
-    [0, 1],
-    [1, 2],
-    [1, 3],
-    [3, 4],
-    [2, 4],
-    [4, 0]
-  ];
-  const activeIndex = Math.floor(time * 0.0007) % transitions.length;
-  const progressAmount = (time * 0.0007) % 1;
+function drawDijkstraSSSP(time) {
+  const stepDuration = 1450;
+  const stepIndex = Math.floor(time / stepDuration) % dijkstraSteps.length;
+  const stepProgress = (time % stepDuration) / stepDuration;
+  const step = dijkstraSteps[stepIndex];
+  const nodeRadius = width < 680 ? 17 : 22;
+  const positions = graphModel.nodes.map((node, index) => ({
+    ...node,
+    x: node.x * width + Math.sin(time * 0.00018 + index) * 7 + (pointer.x - 0.5) * 8,
+    y: node.y * height + Math.cos(time * 0.00016 + index) * 7 + (pointer.y - 0.5) * 8
+  }));
 
-  stateContext.clearRect(0, 0, width, height);
-  stateContext.font = `800 ${width < 680 ? 9 : 11}px Inter, system-ui, sans-serif`;
-  stateContext.textAlign = "center";
-  stateContext.textBaseline = "middle";
+  dijkstraContext.clearRect(0, 0, width, height);
+  dijkstraContext.textAlign = "center";
+  dijkstraContext.textBaseline = "middle";
 
-  const positionedStates = states.map((state, index) => {
-    const drift = Math.sin(time * 0.00022 + index) * 6;
-    return {
-      ...state,
-      x: state.x * width + drift + (pointer.x - 0.5) * 8,
-      y: state.y * height + Math.cos(time * 0.0002 + index) * 6 + (pointer.y - 0.5) * 8
-    };
-  });
+  graphModel.edges.forEach(([from, to, weight]) => {
+    const start = positions[from];
+    const end = positions[to];
+    const isTreeEdge = step.previous[to] === from;
+    const isRelaxing = from === step.current && !step.settled.has(to);
 
-  transitions.forEach((transition, index) => {
-    const from = positionedStates[transition[0]];
-    const to = positionedStates[transition[1]];
-    const isActive = index === activeIndex;
-    const controlX = (from.x + to.x) / 2 + (to.y - from.y) * 0.08;
-    const controlY = (from.y + to.y) / 2 - (to.x - from.x) * 0.08;
+    dijkstraContext.beginPath();
+    dijkstraContext.moveTo(start.x, start.y);
+    dijkstraContext.lineTo(end.x, end.y);
+    dijkstraContext.strokeStyle = isTreeEdge ? "rgba(23, 79, 119, 0.28)" : "rgba(57, 116, 158, 0.1)";
+    dijkstraContext.lineWidth = isTreeEdge ? 1.8 : 1;
+    dijkstraContext.stroke();
 
-    stateContext.beginPath();
-    stateContext.moveTo(from.x, from.y);
-    stateContext.quadraticCurveTo(controlX, controlY, to.x, to.y);
-    stateContext.strokeStyle = isActive ? "rgba(22, 62, 94, 0.28)" : "rgba(57, 116, 158, 0.11)";
-    stateContext.lineWidth = isActive ? 1.7 : 1;
-    stateContext.stroke();
-
-    if (isActive) {
-      const point = getQuadraticPoint(from, { x: controlX, y: controlY }, to, progressAmount);
-      const glow = stateContext.createRadialGradient(point.x, point.y, 0, point.x, point.y, 26);
-      glow.addColorStop(0, "rgba(22, 62, 94, 0.22)");
-      glow.addColorStop(0.36, "rgba(72, 132, 176, 0.14)");
-      glow.addColorStop(1, "rgba(72, 132, 176, 0)");
-      stateContext.fillStyle = glow;
-      stateContext.beginPath();
-      stateContext.arc(point.x, point.y, 26, 0, Math.PI * 2);
-      stateContext.fill();
+    if (isRelaxing) {
+      const pulse = easeInOut(stepProgress);
+      const x = start.x + (end.x - start.x) * pulse;
+      const y = start.y + (end.y - start.y) * pulse;
+      const glow = dijkstraContext.createRadialGradient(x, y, 0, x, y, 28);
+      glow.addColorStop(0, "rgba(21, 73, 110, 0.22)");
+      glow.addColorStop(0.42, "rgba(82, 151, 198, 0.14)");
+      glow.addColorStop(1, "rgba(82, 151, 198, 0)");
+      dijkstraContext.fillStyle = glow;
+      dijkstraContext.beginPath();
+      dijkstraContext.arc(x, y, 28, 0, Math.PI * 2);
+      dijkstraContext.fill();
     }
+
+    const midX = (start.x + end.x) / 2;
+    const midY = (start.y + end.y) / 2;
+    dijkstraContext.font = `800 ${width < 680 ? 8 : 9}px Inter, system-ui, sans-serif`;
+    dijkstraContext.fillStyle = "rgba(34, 80, 114, 0.2)";
+    dijkstraContext.fillText(String(weight), midX, midY);
   });
 
-  positionedStates.forEach((state, index) => {
-    const isActive = transitions[activeIndex].includes(index);
-    const radius = 14;
-    stateContext.beginPath();
-    roundedRect(stateContext, state.x - nodeWidth / 2, state.y - nodeHeight / 2, nodeWidth, nodeHeight, radius);
-    stateContext.fillStyle = isActive ? "rgba(24, 68, 101, 0.2)" : "rgba(255, 255, 255, 0.22)";
-    stateContext.fill();
-    stateContext.strokeStyle = isActive ? "rgba(24, 68, 101, 0.3)" : "rgba(57, 116, 158, 0.16)";
-    stateContext.lineWidth = isActive ? 1.35 : 1;
-    stateContext.stroke();
-    stateContext.fillStyle = isActive ? "rgba(18, 45, 66, 0.5)" : "rgba(34, 80, 114, 0.24)";
-    stateContext.fillText(state.label, state.x, state.y);
+  positions.forEach((node, index) => {
+    const isSource = index === graphModel.source;
+    const isSettled = step.settled.has(index);
+    const isCurrent = index === step.current;
+    const distance = step.distances[index];
+    const glowSize = isCurrent ? nodeRadius + 18 + Math.sin(stepProgress * Math.PI) * 8 : nodeRadius + 8;
+
+    const glow = dijkstraContext.createRadialGradient(node.x, node.y, 0, node.x, node.y, glowSize);
+    glow.addColorStop(0, isCurrent ? "rgba(23, 79, 119, 0.18)" : "rgba(255, 255, 255, 0.18)");
+    glow.addColorStop(1, "rgba(255, 255, 255, 0)");
+    dijkstraContext.fillStyle = glow;
+    dijkstraContext.beginPath();
+    dijkstraContext.arc(node.x, node.y, glowSize, 0, Math.PI * 2);
+    dijkstraContext.fill();
+
+    dijkstraContext.beginPath();
+    dijkstraContext.arc(node.x, node.y, nodeRadius, 0, Math.PI * 2);
+    dijkstraContext.fillStyle = isCurrent
+      ? "rgba(24, 68, 101, 0.24)"
+      : isSettled
+        ? "rgba(255, 255, 255, 0.32)"
+        : "rgba(255, 255, 255, 0.18)";
+    dijkstraContext.fill();
+    dijkstraContext.strokeStyle = isCurrent || isSource ? "rgba(22, 62, 94, 0.34)" : "rgba(57, 116, 158, 0.16)";
+    dijkstraContext.lineWidth = isCurrent ? 1.8 : 1;
+    dijkstraContext.stroke();
+
+    dijkstraContext.font = `900 ${width < 680 ? 9 : 11}px Inter, system-ui, sans-serif`;
+    dijkstraContext.fillStyle = "rgba(18, 45, 66, 0.48)";
+    dijkstraContext.fillText(node.label, node.x, node.y - 2);
+    dijkstraContext.font = `800 ${width < 680 ? 7 : 8}px Inter, system-ui, sans-serif`;
+    dijkstraContext.fillStyle = "rgba(34, 80, 114, 0.32)";
+    dijkstraContext.fillText(distance === Infinity ? "inf" : `d=${distance}`, node.x, node.y + nodeRadius + 11);
   });
 }
 
-function getQuadraticPoint(start, control, end, amount) {
-  const inverse = 1 - amount;
-  return {
-    x: inverse * inverse * start.x + 2 * inverse * amount * control.x + amount * amount * end.x,
-    y: inverse * inverse * start.y + 2 * inverse * amount * control.y + amount * amount * end.y
-  };
-}
-
-function roundedRect(ctx, x, y, widthValue, heightValue, radius) {
-  ctx.moveTo(x + radius, y);
-  ctx.lineTo(x + widthValue - radius, y);
-  ctx.quadraticCurveTo(x + widthValue, y, x + widthValue, y + radius);
-  ctx.lineTo(x + widthValue, y + heightValue - radius);
-  ctx.quadraticCurveTo(x + widthValue, y + heightValue, x + widthValue - radius, y + heightValue);
-  ctx.lineTo(x + radius, y + heightValue);
-  ctx.quadraticCurveTo(x, y + heightValue, x, y + heightValue - radius);
-  ctx.lineTo(x, y + radius);
-  ctx.quadraticCurveTo(x, y, x + radius, y);
+function easeInOut(amount) {
+  return amount < 0.5 ? 2 * amount * amount : 1 - Math.pow(-2 * amount + 2, 2) / 2;
 }
 
 function setScrollProgress() {
@@ -294,7 +356,7 @@ setScrollProgress();
 if (!prefersReducedMotion.matches) {
   animationFrame = requestAnimationFrame(drawLiquid);
 } else {
-  drawStateMachine(0);
+  drawDijkstraSSSP(0);
 }
 
 window.addEventListener("resize", resizeCanvas);
@@ -305,8 +367,8 @@ prefersReducedMotion.addEventListener("change", event => {
   if (event.matches) {
     cancelAnimationFrame(animationFrame);
     context.clearRect(0, 0, width, height);
-    stateContext.clearRect(0, 0, width, height);
-    drawStateMachine(0);
+    dijkstraContext.clearRect(0, 0, width, height);
+    drawDijkstraSSSP(0);
   } else {
     animationFrame = requestAnimationFrame(drawLiquid);
   }
