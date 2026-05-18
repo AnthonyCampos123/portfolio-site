@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Software engineering portfolio for Anthony Campos.">
+    <title>Anthony Campos | Software Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <canvas class="liquid-canvas" id="liquidCanvas" aria-hidden="true"></canvas>
+    <canvas class="state-canvas" id="stateCanvas" aria-hidden="true"></canvas>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+    <header class="site-header" data-reveal>
+      <a class="brand" href="#top" aria-label="Anthony Campos home">
+        <span class="brand-mark">AC</span>
+        <span>Anthony Campos</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <span class="nav-glow" aria-hidden="true"></span>
+        <a href="#work" class="nav-link">Work</a>
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#experience" class="nav-link">Experience</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+      <a class="nav-cta" href="mailto:anthony@example.com">Email</a>
+    </header>
+
+    <main id="top">
+      <section class="hero section-shell">
+        <div class="hero-copy" data-reveal>
+          <p class="eyebrow">Software Engineer</p>
+          <h1>Secure software, polished systems.</h1>
+          <p class="hero-text">
+            I create reliable full-stack systems, thoughtful interfaces, and testable backend services. This portfolio is tuned for clarity: selected projects, practical engineering strengths, and a direct path to connect.
+          </p>
+          <div class="hero-actions" aria-label="Primary actions">
+            <a class="button primary magnetic" href="#work">View Projects</a>
+            <a class="button secondary magnetic" href="#contact">Get in Touch</a>
+          </div>
+        </div>
+
+        <aside class="hero-panel glass-panel" data-reveal>
+          <div class="panel-topline">
+            <span class="status-dot"></span>
+            <span>Available for SWE roles</span>
+          </div>
+
+          <div class="capability-list" aria-label="Portfolio highlights">
+            <div>
+              <span>01</span>
+              <strong>Backend Systems</strong>
+              <small>Python services, auth flows, sockets</small>
+            </div>
+            <div>
+              <span>02</span>
+              <strong>Security Mindset</strong>
+              <small>Cryptography, handshakes, tests</small>
+            </div>
+            <div>
+              <span>03</span>
+              <strong>Polished Interfaces</strong>
+              <small>Responsive UI with restrained motion</small>
+            </div>
+          </div>
+
+          <div class="code-window" aria-label="Code sample">
+            <div class="window-controls" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <pre><code>pipeline = Portfolio()
+pipeline.observe(problem)
+pipeline.compose(
+    reliable_backend,
+    polished_interface,
+    verified_behavior,
+)
+pipeline.ship(signal="clear")</code></pre>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section-shell section-band" id="work">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow">Selected Work</p>
+          <h2>Projects with practical engineering depth.</h2>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card glass-panel tilt-card" data-reveal>
+            <div class="project-visual secure-visual" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="project-content">
+              <p class="project-kicker">Python | Security | Testing</p>
+              <h3>Secret Hearts 2FA</h3>
+              <p>
+                A client-server Python system with account flows, matches, cryptographic utilities, and automated tests around handshake, connection, and server security behavior.
+              </p>
+              <div class="tag-row" aria-label="Secret Hearts technologies">
+                <span>Python</span>
+                <span>Cryptography</span>
+                <span>Pytest</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card glass-panel tilt-card" data-reveal>
+            <div class="project-visual data-visual" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="project-content">
+              <p class="project-kicker">Full-stack | Product Thinking</p>
+              <h3>Systems Dashboard</h3>
+              <p>
+                A recruiter-friendly placeholder for your next featured project: a clean dashboard, API service, or data product with clear metrics and architecture notes.
+              </p>
+              <div class="tag-row" aria-label="Systems dashboard technologies">
+                <span>React</span>
+                <span>APIs</span>
+                <span>UX</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card glass-panel tilt-card" data-reveal>
+            <div class="project-visual flow-visual" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="project-content">
+              <p class="project-kicker">Algorithms | Reliability</p>
+              <h3>Engineering Case Study</h3>
+              <p>
+                Use this slot for an algorithm-heavy, infrastructure, mobile, or class project. The layout is designed for a concise problem, solution, and impact story.
+              </p>
+              <div class="tag-row" aria-label="Case study technologies">
+                <span>Design</span>
+                <span>Testing</span>
+                <span>Performance</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-shell split-section" id="skills">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow">Capabilities</p>
+          <h2>Clean implementation across the stack.</h2>
+        </div>
+
+        <div class="skill-grid">
+          <div class="skill-card glass-panel" data-reveal>
+            <h3>Backend</h3>
+            <p>Python services, socket programming, authentication flows, data modeling, API design, and practical error handling.</p>
+          </div>
+          <div class="skill-card glass-panel" data-reveal>
+            <h3>Frontend</h3>
+            <p>Responsive interfaces, accessible components, smooth animation systems, and UI polish that supports the workflow.</p>
+          </div>
+          <div class="skill-card glass-panel" data-reveal>
+            <h3>Verification</h3>
+            <p>Pytest, integration tests, edge-case thinking, and a habit of making behavior explicit before calling work complete.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-shell timeline-section" id="experience">
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow">Experience</p>
+          <h2>A focused profile for software engineering roles.</h2>
+        </div>
+        <div class="timeline glass-panel" data-reveal>
+          <div class="timeline-item">
+            <span class="timeline-date">Now</span>
+            <div>
+              <h3>Software Engineering Candidate</h3>
+              <p>Preparing polished, project-driven applications for SWE roles with emphasis on backend reliability, security fundamentals, and clean product surfaces.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="timeline-date">Projects</span>
+            <div>
+              <h3>Applied Engineering Work</h3>
+              <p>Built and tested Python client-server functionality, account lifecycle flows, cryptographic helpers, and security-focused test cases.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="timeline-date">Next</span>
+            <div>
+              <h3>Interview-Ready Portfolio</h3>
+              <p>Ready to expand with live demos, GitHub links, resume download, and project writeups tailored to each application path.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-shell contact-section" id="contact">
+        <div class="contact-panel glass-panel" data-reveal>
+          <div>
+            <p class="eyebrow">Contact</p>
+            <h2>Let's build something useful.</h2>
+            <p>Replace the placeholder links with your real email, GitHub, LinkedIn, and resume URL when you are ready to publish.</p>
+          </div>
+          <div class="contact-actions">
+            <a class="button primary magnetic" href="mailto:anthony@example.com">anthony@example.com</a>
+            <a class="button secondary magnetic" href="https://github.com/" aria-label="GitHub profile placeholder">GitHub</a>
+            <a class="button secondary magnetic" href="https://www.linkedin.com/" aria-label="LinkedIn profile placeholder">LinkedIn</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>Anthony Campos</span>
+      <span>Designed and built for SWE applications.</span>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
