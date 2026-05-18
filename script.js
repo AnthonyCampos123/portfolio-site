@@ -151,10 +151,13 @@ function drawLiquid(time) {
 }
 
 function drawDijkstraSSSP(time) {
-  const stepDuration = 1450;
+  const stepDuration = 2400;
   const stepIndex = Math.floor(time / stepDuration) % dijkstraSteps.length;
   const stepProgress = (time % stepDuration) / stepDuration;
   const step = dijkstraSteps[stepIndex];
+  const previousStep = dijkstraSteps[(stepIndex - 1 + dijkstraSteps.length) % dijkstraSteps.length];
+  const transition = easeInOut(Math.min(stepProgress / 0.42, 1));
+  const relaxProgress = easeInOut((stepProgress * 1.08) % 1);
   const nodeRadius = width < 680 ? 17 : 22;
   const positions = graphModel.nodes.map((node, index) => ({
     ...node,
@@ -166,26 +169,29 @@ function drawDijkstraSSSP(time) {
   dijkstraContext.textAlign = "center";
   dijkstraContext.textBaseline = "middle";
 
-  graphModel.edges.forEach(([from, to, weight]) => {
+  graphModel.edges.forEach(([from, to, weight], edgeIndex) => {
     const start = positions[from];
     const end = positions[to];
     const isTreeEdge = step.previous[to] === from;
+    const wasTreeEdge = previousStep.previous[to] === from;
+    const treeAlpha = isTreeEdge ? (wasTreeEdge ? 1 : transition) : 0;
     const isRelaxing = from === step.current && !step.settled.has(to);
 
     dijkstraContext.beginPath();
     dijkstraContext.moveTo(start.x, start.y);
     dijkstraContext.lineTo(end.x, end.y);
-    dijkstraContext.strokeStyle = isTreeEdge ? "rgba(23, 79, 119, 0.28)" : "rgba(57, 116, 158, 0.1)";
-    dijkstraContext.lineWidth = isTreeEdge ? 1.8 : 1;
+    dijkstraContext.strokeStyle = `rgba(23, 79, 119, ${0.1 + treeAlpha * 0.2})`;
+    dijkstraContext.lineWidth = 1 + treeAlpha * 0.85;
     dijkstraContext.stroke();
 
     if (isRelaxing) {
-      const pulse = easeInOut(stepProgress);
+      const stagger = Math.max(0, Math.min(1, relaxProgress - (edgeIndex % 3) * 0.12));
+      const pulse = easeInOut(stagger);
       const x = start.x + (end.x - start.x) * pulse;
       const y = start.y + (end.y - start.y) * pulse;
       const glow = dijkstraContext.createRadialGradient(x, y, 0, x, y, 28);
-      glow.addColorStop(0, "rgba(21, 73, 110, 0.22)");
-      glow.addColorStop(0.42, "rgba(82, 151, 198, 0.14)");
+      glow.addColorStop(0, `rgba(21, 73, 110, ${0.09 + transition * 0.14})`);
+      glow.addColorStop(0.42, "rgba(82, 151, 198, 0.12)");
       glow.addColorStop(1, "rgba(82, 151, 198, 0)");
       dijkstraContext.fillStyle = glow;
       dijkstraContext.beginPath();
@@ -203,12 +209,15 @@ function drawDijkstraSSSP(time) {
   positions.forEach((node, index) => {
     const isSource = index === graphModel.source;
     const isSettled = step.settled.has(index);
+    const wasSettled = previousStep.settled.has(index);
     const isCurrent = index === step.current;
     const distance = step.distances[index];
-    const glowSize = isCurrent ? nodeRadius + 18 + Math.sin(stepProgress * Math.PI) * 8 : nodeRadius + 8;
+    const settleAlpha = isSettled ? (wasSettled ? 1 : transition) : 0;
+    const currentPulse = (Math.sin(time * 0.0032) + 1) / 2;
+    const glowSize = isCurrent ? nodeRadius + 16 + currentPulse * 12 : nodeRadius + 8 + settleAlpha * 5;
 
     const glow = dijkstraContext.createRadialGradient(node.x, node.y, 0, node.x, node.y, glowSize);
-    glow.addColorStop(0, isCurrent ? "rgba(23, 79, 119, 0.18)" : "rgba(255, 255, 255, 0.18)");
+    glow.addColorStop(0, isCurrent ? `rgba(23, 79, 119, ${0.11 + currentPulse * 0.08})` : `rgba(255, 255, 255, ${0.12 + settleAlpha * 0.1})`);
     glow.addColorStop(1, "rgba(255, 255, 255, 0)");
     dijkstraContext.fillStyle = glow;
     dijkstraContext.beginPath();
@@ -218,13 +227,11 @@ function drawDijkstraSSSP(time) {
     dijkstraContext.beginPath();
     dijkstraContext.arc(node.x, node.y, nodeRadius, 0, Math.PI * 2);
     dijkstraContext.fillStyle = isCurrent
-      ? "rgba(24, 68, 101, 0.24)"
-      : isSettled
-        ? "rgba(255, 255, 255, 0.32)"
-        : "rgba(255, 255, 255, 0.18)";
+      ? `rgba(24, 68, 101, ${0.18 + currentPulse * 0.08})`
+      : `rgba(255, 255, 255, ${0.18 + settleAlpha * 0.16})`;
     dijkstraContext.fill();
-    dijkstraContext.strokeStyle = isCurrent || isSource ? "rgba(22, 62, 94, 0.34)" : "rgba(57, 116, 158, 0.16)";
-    dijkstraContext.lineWidth = isCurrent ? 1.8 : 1;
+    dijkstraContext.strokeStyle = isCurrent || isSource ? `rgba(22, 62, 94, ${0.28 + currentPulse * 0.08})` : `rgba(57, 116, 158, ${0.14 + settleAlpha * 0.1})`;
+    dijkstraContext.lineWidth = isCurrent ? 1.6 + currentPulse * 0.5 : 1 + settleAlpha * 0.25;
     dijkstraContext.stroke();
 
     dijkstraContext.font = `900 ${width < 680 ? 9 : 11}px Inter, system-ui, sans-serif`;
