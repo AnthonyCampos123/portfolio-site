@@ -544,6 +544,12 @@ pre {
   margin-bottom: 28px;
 }
 
+.thesis-heading {
+  max-width: 860px;
+  font-size: clamp(1.45rem, 2.8vw, 2.55rem);
+  line-height: 1.14;
+}
+
 .project-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
