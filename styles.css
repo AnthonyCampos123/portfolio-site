@@ -258,13 +258,15 @@ a {
 h1,
 h2,
 h3,
+h4,
 p {
   overflow-wrap: anywhere;
 }
 
 h1,
 h2,
-h3 {
+h3,
+h4 {
   margin: 0;
   line-height: 1.05;
 }
@@ -284,6 +286,14 @@ h2 {
 h3 {
   font-size: 1.15rem;
   letter-spacing: 0;
+}
+
+h4 {
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.2;
 }
 
 .hero-text {
