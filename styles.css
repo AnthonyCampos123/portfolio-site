@@ -816,6 +816,10 @@ pre {
   font-size: 0.9rem;
 }
 
+.blue-link {
+  color: #1a0dab;
+}
+
 [data-reveal] {
   opacity: 0;
   transform: translateY(18px);
@@ -917,6 +921,7 @@ pre {
     flex-direction: column;
   }
 }
+
 
 @media (prefers-reduced-motion: reduce) {
   *,
