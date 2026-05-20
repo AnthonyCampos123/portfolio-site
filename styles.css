@@ -1,18 +1,18 @@
 :root {
   color-scheme: light;
-  --bg: #eef8ff;
-  --bg-deep: #f8fcff;
-  --panel: rgba(255, 255, 255, 0.34);
-  --panel-strong: rgba(255, 255, 255, 0.56);
-  --border: rgba(255, 255, 255, 0.58);
-  --border-strong: rgba(116, 174, 216, 0.46);
+  --bg: #f3faff;
+  --bg-deep: #fbfdff;
+  --panel: rgba(255, 255, 255, 0.26);
+  --panel-strong: rgba(255, 255, 255, 0.64);
+  --border: rgba(255, 255, 255, 0.66);
+  --border-strong: rgba(121, 184, 224, 0.5);
   --text: #172332;
   --muted: #43586b;
   --soft: #243649;
   --blue: #70add6;
   --blue-strong: #276f9c;
   --cyan: #d9f2ff;
-  --shadow: rgba(72, 111, 142, 0.1);
+  --shadow: rgba(72, 111, 142, 0.085);
   --radius: 8px;
   --max-width: 1160px;
 }
@@ -30,9 +30,10 @@ body {
   margin: 0;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at 42% -20%, rgba(180, 224, 250, 0.72), transparent 34rem),
-    radial-gradient(circle at 88% 18%, rgba(255, 255, 255, 0.92), transparent 26rem),
-    linear-gradient(135deg, var(--bg-deep), var(--bg) 48%, #e4f4ff);
+    radial-gradient(circle at 42% -22%, rgba(194, 232, 252, 0.58), transparent 34rem),
+    radial-gradient(circle at 88% 18%, rgba(255, 255, 255, 0.96), transparent 28rem),
+    radial-gradient(circle at 6% 66%, rgba(221, 243, 255, 0.52), transparent 30rem),
+    linear-gradient(135deg, var(--bg-deep), var(--bg) 54%, #edf8ff);
   color: var(--text);
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.5;
@@ -370,13 +371,14 @@ h4 {
   border-radius: var(--radius);
   position: relative;
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.56), rgba(226, 244, 255, 0.16)),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.62), rgba(231, 247, 255, 0.18)),
     var(--panel);
   box-shadow:
-    0 24px 80px var(--shadow),
-    inset 0 1px rgba(255, 255, 255, 0.9),
-    inset 0 -1px rgba(112, 173, 214, 0.08);
-  backdrop-filter: blur(58px) saturate(190%) contrast(104%);
+    0 26px 82px var(--shadow),
+    0 1px 0 rgba(255, 255, 255, 0.54),
+    inset 0 1px rgba(255, 255, 255, 0.94),
+    inset 0 -1px rgba(112, 173, 214, 0.1);
+  backdrop-filter: blur(64px) saturate(195%) contrast(104%);
 }
 
 .glass-panel::after {
@@ -387,7 +389,7 @@ h4 {
   background:
     linear-gradient(125deg, rgba(255, 255, 255, 0.42), transparent 28%, rgba(255, 255, 255, 0.18) 62%, transparent),
     radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.5), transparent 34%);
-  opacity: 0.58;
+  opacity: 0.64;
   pointer-events: none;
 }
 
@@ -542,7 +544,7 @@ pre {
 }
 
 .section-heading {
-  margin-bottom: 28px;
+  margin-bottom: 30px;
 }
 
 .thesis-heading {
@@ -554,7 +556,7 @@ pre {
 .project-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 18px;
 }
 
 .project-card,
@@ -577,7 +579,7 @@ pre {
 
 .project-visual {
   position: relative;
-  height: 180px;
+  height: 190px;
   overflow: hidden;
   border-bottom: 1px solid rgba(92, 150, 192, 0.12);
   background:
@@ -605,6 +607,8 @@ pre {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: saturate(0.9) contrast(0.98);
+  transform: scale(1.01);
 }
 
 .project-content,
@@ -641,9 +645,9 @@ pre {
 
 .tag-row span {
   padding: 7px 10px;
-  border: 1px solid rgba(92, 150, 192, 0.14);
+  border: 1px solid rgba(92, 150, 192, 0.16);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.28);
   color: var(--soft);
   font-size: 0.78rem;
   font-weight: 700;
@@ -664,13 +668,14 @@ pre {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(22px, 4vw, 44px);
   align-items: stretch;
-  padding: clamp(26px, 4vw, 44px);
+  padding: clamp(30px, 4.4vw, 52px);
 }
 
 .course-list {
   display: grid;
   align-content: start;
-  gap: 6px;
+  gap: 10px;
+  min-width: 0;
 }
 
 .course-tags {
@@ -687,8 +692,8 @@ pre {
   border: 1px solid rgba(92, 150, 192, 0.14);
   border-radius: var(--radius);
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.42), rgba(224, 244, 255, 0.12)),
-    rgba(255, 255, 255, 0.18);
+    linear-gradient(145deg, rgba(255, 255, 255, 0.5), rgba(224, 244, 255, 0.16)),
+    rgba(255, 255, 255, 0.22);
   color: var(--soft);
   font-size: 0.82rem;
   font-weight: 700;
@@ -698,7 +703,7 @@ pre {
 .thesis-panel {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.65fr);
-  gap: clamp(20px, 3vw, 44px);
+  gap: clamp(24px, 3.4vw, 48px);
   align-items: stretch;
   overflow: hidden;
 }
@@ -724,7 +729,7 @@ pre {
   align-content: center;
   gap: 8px;
   min-height: 100%;
-  padding: 18px;
+  padding: clamp(18px, 2.6vw, 26px);
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--radius);
   background:
@@ -752,7 +757,7 @@ pre {
   gap: clamp(24px, 4vw, 52px);
   align-items: center;
   overflow: hidden;
-  padding: clamp(28px, 4vw, 48px);
+  padding: clamp(30px, 4.5vw, 54px);
 }
 
 .about-copy {
@@ -772,13 +777,13 @@ pre {
 .about-orbit {
   position: relative;
   display: grid;
-  min-height: 260px;
+  min-height: 270px;
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.48);
   border-radius: var(--radius);
   background:
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.58), transparent 44%),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.34), rgba(218, 242, 255, 0.14));
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.64), transparent 44%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.4), rgba(218, 242, 255, 0.16));
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.58);
 }
 
@@ -830,7 +835,7 @@ pre {
 .contact-panel {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 28px;
+  gap: clamp(22px, 4vw, 38px);
   align-items: center;
 }
 
@@ -859,7 +864,11 @@ pre {
 }
 
 .blue-link {
-  color: #1a0dab;
+  color: #1f6f9f;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: rgba(112, 173, 214, 0.34);
+  text-underline-offset: 3px;
 }
 
 [data-reveal] {
