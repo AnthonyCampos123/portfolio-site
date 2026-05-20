@@ -658,19 +658,21 @@ pre {
 .coursework-panel {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(150px, 0.38fr) minmax(0, 1fr);
-  gap: clamp(18px, 3vw, 34px);
+  gap: clamp(24px, 4vw, 46px);
   align-items: stretch;
+  padding: clamp(26px, 4vw, 44px);
 }
 
 .course-list {
   display: grid;
   align-content: start;
+  gap: 6px;
 }
 
 .course-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 9px;
+  gap: 10px;
 }
 
 .course-tags span {
